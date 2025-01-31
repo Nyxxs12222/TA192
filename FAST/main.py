@@ -8,10 +8,10 @@ app = FastAPI(
 )
 
 usuarios = [
-    {"id": 1, "nombre": "Uriel", "edad": 20},
+    {"id": 1, "nombre": "Daniel", "edad": 20},
     {"id": 2, "nombre": "Isay", "edad": 37},
-    {"id": 3, "nombre": "Evel", "edad": 20},
-    {"id": 4, "nombre": "Ana", "edad": 18}
+    {"id": 3, "nombre": "Evelyn", "edad": 20},
+    {"id": 4, "nombre": "Ana", "edad": 15}
 ]
 
 # Endpoint home
@@ -41,3 +41,25 @@ def consultaUsuario2(id: Optional[int] = None):
         return {"mensaje": f"No se encontró el usuario con id: {id}"}
     else:
         return {"mensaje": "No se proporcionó un id"}
+    
+#endpoint con varios parametro opcionales
+@app.get("/usuarios/", tags=["3 parámetros opcionales"])
+async def consulta_usuarios(
+    usuario_id: Optional[int] = None,
+    nombre: Optional[str] = None,
+    edad: Optional[int] = None
+):
+    resultados = []
+
+    for usuario in usuarios:
+        if (
+            (usuario_id is None or usuario["id"] == usuario_id) and
+            (nombre is None or usuario["nombre"].lower() == nombre.lower()) and
+            (edad is None or usuario["edad"] == edad)
+        ):
+            resultados.append(usuario)
+
+    if resultados:
+        return {"usuarios_encontrados": resultados}
+    else:
+        return {"mensaje": "No se encontraron usuarios que coincidan con los parámetros proporcionados."}
